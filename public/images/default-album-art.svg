@@ -1,15 +1,7 @@
-<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="400" height="400" fill="url(#gradient)" />
-  <circle cx="200" cy="200" r="120" stroke="white" stroke-width="4" stroke-opacity="0.2" />
-  <circle cx="200" cy="200" r="60" fill="white" fill-opacity="0.1" />
-  <path d="M200 140V260" stroke="white" stroke-width="4" stroke-linecap="round" />
-  <path d="M240 200H180" stroke="white" stroke-width="4" stroke-linecap="round" />
-  <circle cx="200" cy="200" r="15" fill="white" />
-  <defs>
-    <linearGradient id="gradient" x1="0" y1="0" x2="400" y2="400" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#4F46E5" />
-      <stop offset="50%" stop-color="#7C3AED" />
-      <stop offset="100%" stop-color="#EC4899" />
-    </linearGradient>
-  </defs>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" version="1.1" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+ <rect width="400" height="400" fill="#1e1b4b"/>
+ <g transform="matrix(8.3333 0 0 8.3333 100 100)" fill="#c7d2fe">
+  <path d="m12 3v10.55c-0.59-0.34-1.27-0.55-2-0.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4v-10h2v-4z"/>
+ </g>
 </svg> 

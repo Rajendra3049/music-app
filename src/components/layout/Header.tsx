@@ -4,7 +4,7 @@ import { OWNER_NAME } from '@/constants/owner-info';
 import { ROUTES, ROUTES_KEYS } from '@/constants/routes';
 import { useTheme } from '@/context/ThemeContext';
 import { AnimatePresence, motion } from 'framer-motion';
-import { HeartIcon, LogOutIcon, MoonIcon, Music2Icon, SettingsIcon, SunIcon, UserIcon } from 'lucide-react';
+import { HeartIcon, LogOutIcon, MenuIcon, MoonIcon, Music2Icon, SettingsIcon, SunIcon, UserIcon, XIcon } from 'lucide-react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,6 +15,7 @@ export function Header() {
   const { theme, toggleTheme } = useTheme();
   const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { data: session, status } = useSession();
   const isLoggedIn = status === 'authenticated';
@@ -28,10 +29,17 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
   const isActive = (path: string) => pathname === path;
 
-  const getLinkClassName = (path: string) => {
-    const baseClasses = "relative px-4 py-2 text-base font-medium transition-all duration-300 ease-out";
+  const getLinkClassName = (path: string, isMobile = false) => {
+    const baseClasses = isMobile
+      ? "w-full px-5 py-3 text-base font-medium transition-all duration-300 ease-out"
+      : "relative px-4 py-2 text-base font-medium transition-all duration-300 ease-out";
     const activeClasses = "text-purple-500 dark:text-purple-400";
     const inactiveClasses = "text-gray-600 dark:text-gray-300 hover:text-purple-500 dark:hover:text-purple-400";
     
@@ -49,6 +57,25 @@ export function Header() {
         ease: "easeOut"
       }
     })
+  };
+
+  const mobileMenuVariants = {
+    closed: {
+      opacity: 0,
+      x: "100%",
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut"
+      }
+    },
+    open: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut"
+      }
+    }
   };
 
   const logoVariants = {
@@ -71,6 +98,12 @@ export function Header() {
     setDropdownOpen(false);
   };
 
+  const navigationLinks = [
+    { path: ROUTES[ROUTES_KEYS._ABOUT], label: 'About' },
+    { path: ROUTES[ROUTES_KEYS._MUSIC], label: 'Music' },
+    { path: ROUTES[ROUTES_KEYS._CONTACT], label: 'Contact' }
+  ];
+
   return (
     <motion.nav 
       className={`sticky top-0 z-50 transition-all duration-300 ${
@@ -82,8 +115,8 @@ export function Header() {
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
-        <div className="flex justify-between h-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16 md:h-20">
           <div className="flex items-center">
             <motion.div 
               className="flex-shrink-0"
@@ -91,20 +124,16 @@ export function Header() {
               initial="initial"
               whileHover="hover"
             >
-              <Link href={ROUTES[ROUTES_KEYS._HOME]} className="flex items-center space-x-3">
-                <Music2Icon className="h-10 w-10 text-purple-500 dark:text-purple-400" />
-                <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
+              <Link href={ROUTES[ROUTES_KEYS._HOME]} className="flex items-center space-x-2 md:space-x-3">
+                <Music2Icon className="h-8 w-8 md:h-10 md:w-10 text-purple-500 dark:text-purple-400" />
+                <span className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
                   {OWNER_NAME}
                 </span>
               </Link>
             </motion.div>
 
-            <div className="hidden sm:ml-10 sm:flex sm:space-x-6">
-              {[
-                { path: ROUTES[ROUTES_KEYS._ABOUT], label: 'About' },
-                { path: ROUTES[ROUTES_KEYS._MUSIC], label: 'Music' },
-                { path: ROUTES[ROUTES_KEYS._CONTACT], label: 'Contact' }
-              ].map((link, i) => (
+            <div className="hidden md:ml-10 md:flex md:space-x-6">
+              {navigationLinks.map((link, i) => (
                 <motion.div
                   key={link.path}
                   custom={i}
@@ -127,10 +156,10 @@ export function Header() {
             </div>
           </div>
 
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-2 md:space-x-6">
             <motion.button
               onClick={toggleTheme}
-              className="p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="p-2 md:p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -143,9 +172,9 @@ export function Header() {
                   transition={{ duration: 0.3 }}
                 >
                   {theme === 'dark' ? (
-                    <SunIcon className="h-6 w-6 text-yellow-500" />
+                    <SunIcon className="h-5 w-5 md:h-6 md:w-6 text-yellow-500" />
                   ) : (
-                    <MoonIcon className="h-6 w-6 text-purple-500" />
+                    <MoonIcon className="h-5 w-5 md:h-6 md:w-6 text-purple-500" />
                   )}
                 </motion.div>
               </AnimatePresence>
@@ -154,34 +183,35 @@ export function Header() {
             <motion.div
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
+              className="hidden sm:block"
             >
               <Link 
                 href={isLoggedIn ? "/favorites" : "/auth/signin"}
-                className="p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="p-2 md:p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               >
-                <HeartIcon className="h-6 w-6 text-pink-500" />
+                <HeartIcon className="h-5 w-5 md:h-6 md:w-6 text-pink-500" />
               </Link>
             </motion.div>
 
             <motion.div 
-              className="relative"
+              className="relative hidden sm:block"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
               <button
                 onClick={isLoggedIn ? () => setDropdownOpen(!dropdownOpen) : handleLogin}
-                className="p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors overflow-hidden"
+                className="p-2 md:p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors overflow-hidden"
               >
                 {isLoggedIn && session?.user?.image ? (
                   <Image 
                     src={session.user.image} 
                     alt={session.user.name || "User"} 
-                    width={28} 
-                    height={28} 
-                    className="rounded-full ring-2 ring-purple-500"
+                    width={24} 
+                    height={24} 
+                    className="rounded-full ring-2 ring-purple-500 md:w-7 md:h-7"
                   />
                 ) : (
-                  <UserIcon className="h-6 w-6 text-purple-500" />
+                  <UserIcon className="h-5 w-5 md:h-6 md:w-6 text-purple-500" />
                 )}
               </button>
 
@@ -235,9 +265,115 @@ export function Header() {
                 )}
               </AnimatePresence>
             </motion.div>
+
+            {/* Mobile menu button */}
+            <motion.button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              {mobileMenuOpen ? (
+                <XIcon className="h-6 w-6 text-gray-600 dark:text-gray-300" />
+              ) : (
+                <MenuIcon className="h-6 w-6 text-gray-600 dark:text-gray-300" />
+              )}
+            </motion.button>
           </div>
         </div>
       </div>
+
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            className="fixed inset-y-0 right-0 w-full sm:w-80 bg-white dark:bg-gray-900 shadow-xl z-50 overflow-y-auto"
+            variants={mobileMenuVariants}
+            initial="closed"
+            animate="open"
+            exit="closed"
+          >
+            <div className="pt-20 pb-6 px-1">
+              {navigationLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  href={link.path}
+                  className={`block ${getLinkClassName(link.path, true)} ${
+                    isActive(link.path)
+                      ? "bg-purple-50 dark:bg-purple-900/20"
+                      : "hover:bg-gray-50 dark:hover:bg-gray-800"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              
+              <div className="mt-6 px-5">
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+                  {isLoggedIn ? (
+                    <>
+                      <div className="flex items-center mb-6">
+                        {session?.user?.image && (
+                          <Image
+                            src={session.user.image}
+                            alt={session.user.name || "User"}
+                            width={40}
+                            height={40}
+                            className="rounded-full ring-2 ring-purple-500"
+                          />
+                        )}
+                        <div className="ml-3">
+                          <p className="text-base font-medium text-gray-700 dark:text-gray-200">
+                            {session?.user?.name}
+                          </p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            {session?.user?.email}
+                          </p>
+                        </div>
+                      </div>
+                      <Link
+                        href="/profile/edit"
+                        className="block py-3 text-base text-gray-700 dark:text-gray-200"
+                      >
+                        <span className="flex items-center">
+                          <SettingsIcon className="mr-3 h-5 w-5" />
+                          Edit Profile
+                        </span>
+                      </Link>
+                      <Link
+                        href="/favorites"
+                        className="block py-3 text-base text-gray-700 dark:text-gray-200"
+                      >
+                        <span className="flex items-center">
+                          <HeartIcon className="mr-3 h-5 w-5" />
+                          Favorites
+                        </span>
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left block py-3 text-base text-gray-700 dark:text-gray-200"
+                      >
+                        <span className="flex items-center">
+                          <LogOutIcon className="mr-3 h-5 w-5" />
+                          Logout
+                        </span>
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={handleLogin}
+                      className="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
+                    >
+                      <UserIcon className="mr-2 h-5 w-5" />
+                      Sign In
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 } 

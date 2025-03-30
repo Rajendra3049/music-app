@@ -7,7 +7,7 @@ export interface ContentItem {
   updatedAt: string;
 }
 
-export interface MediaItem {
+export interface LatestRelease {
   id: string;
   title: string;
   artist: string;
@@ -17,4 +17,7 @@ export interface MediaItem {
   type: 'audio' | 'video';
   createdAt: string;
   updatedAt: string;
-} 
+}
+
+// Alias MediaItem to LatestRelease for backward compatibility
+export type MediaItem = LatestRelease; 
