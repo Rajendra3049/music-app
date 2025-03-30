@@ -146,8 +146,15 @@ yarn dev
 
 ## Future Enhancements
 
-- Live event ticketing integration
-- Online merchandise store
-- Fan community and commenting system
-- Music visualization during playback
-- Mobile app with offline playback
+- Persistent Mini-Player: Keep music playing as users navigate between pages
+- Download Progress Indicators: Visual feedback when downloading tracks
+- Scroll-Triggered Animations: Elements that animate as they enter the viewport
+- Loading Animations: Add branded loader animations between page transitions
+
+Hero Section Enhancements
+
+- Animated Background: Add subtle motion with a dark gradient animation or audio visualizer that responds to sample music
+- Video Hero: Replace the static background with a short, muted loop of you performing at events
+- 3D Elements: Add floating 3D elements like headphones, vinyl records, or sound waves that respond to mouse movement
+
+
