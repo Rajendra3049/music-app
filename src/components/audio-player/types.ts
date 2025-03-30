@@ -27,6 +27,8 @@ export interface AudioControlsProps {
   currentTime: number;
   duration: number;
   disabled?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+  variant?: 'default' | 'minimal';
 }
 
 export interface AudioProgressProps {
@@ -36,6 +38,7 @@ export interface AudioProgressProps {
   isDragging: boolean;
   onDragStart: () => void;
   onDragEnd: () => void;
+  size?: 'sm' | 'md' | 'lg';
 }
 
 export interface AudioVolumeProps {
@@ -43,6 +46,8 @@ export interface AudioVolumeProps {
   isMuted: boolean;
   onVolumeChange: (volume: number) => void;
   onMuteToggle: () => void;
+  size?: 'sm' | 'md' | 'lg';
+  variant?: 'default' | 'simple';
 }
 
 export interface AudioWaveformProps {
