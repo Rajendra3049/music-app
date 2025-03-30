@@ -19,6 +19,7 @@ export function LatestReleases({ latestReleases }: Props) {
   const shouldReduceMotion = useReducedMotion();
   const totalPages = Math.ceil(latestReleases.length / itemsPerPage);
 
+  
   // Update items per page based on screen size
   useEffect(() => {
     const updateItemsPerPage = () => {
