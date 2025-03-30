@@ -17,6 +17,7 @@ interface AudioPlayerContextType {
   toggleMute: () => void;
   resetTrack: () => void;
   toggleMiniPlayer: () => void;
+  closeMiniPlayer: () => Promise<void>;
   addToQueue: (track: LatestRelease) => void;
   removeFromQueue: (trackId: string) => void;
   clearQueue: () => void;
@@ -42,6 +43,9 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
   const [isMiniPlayerVisible, setIsMiniPlayerVisible] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isDraggingRef = useRef(false);
+
+  // Store the last non-zero volume
+  const lastVolumeRef = useRef<number>(1);
 
   // Initialize audio element with better error handling and preloading
   useEffect(() => {
@@ -108,14 +112,19 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
         await audioRef.current.pause();
       }
 
-      // Set new track
+      // Set new track and ensure MiniPlayer is visible
       audioRef.current.src = track.audioUrl;
       setCurrentTrack(track);
       setIsMiniPlayerVisible(true);
 
       // Start playback
       await audioRef.current.play();
-      setPlayerState(prev => ({ ...prev, isPlaying: true, error: null }));
+      setPlayerState(prev => ({ 
+        ...prev, 
+        isPlaying: true, 
+        error: null,
+        currentTime: 0 // Reset time when starting new track
+      }));
 
       // Add to queue if not already in it
       setQueue(prev => {
@@ -160,6 +169,10 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
   const setVolume = useCallback((volume: number) => {
     if (!audioRef.current) return;
     audioRef.current.volume = volume;
+    // Store last non-zero volume
+    if (volume > 0) {
+      lastVolumeRef.current = volume;
+    }
     setPlayerState(prev => ({
       ...prev,
       volume,
@@ -170,13 +183,14 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
   const toggleMute = useCallback(() => {
     if (!audioRef.current) return;
     const newMuted = !playerState.isMuted;
-    audioRef.current.volume = newMuted ? 0 : playerState.volume;
+    const newVolume = newMuted ? 0 : lastVolumeRef.current;
+    audioRef.current.volume = newVolume;
     setPlayerState(prev => ({
       ...prev,
       isMuted: newMuted,
-      volume: newMuted ? 0 : prev.volume || 1
+      volume: newVolume
     }));
-  }, [playerState.isMuted, playerState.volume]);
+  }, [playerState.isMuted]);
 
   const resetTrack = useCallback(() => {
     if (!audioRef.current) return;
@@ -189,6 +203,25 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
 
   const toggleMiniPlayer = useCallback(() => {
     setIsMiniPlayerVisible(prev => !prev);
+  }, []);
+
+  const closeMiniPlayer = useCallback(async () => {
+    if (!audioRef.current) return;
+    
+    // Stop the audio
+    await audioRef.current.pause();
+    audioRef.current.currentTime = 0;
+    
+    // Reset player state
+    setPlayerState(prev => ({
+      ...prev,
+      isPlaying: false,
+      currentTime: 0
+    }));
+    
+    // Reset current track and hide the mini player
+    setCurrentTrack(null);
+    setIsMiniPlayerVisible(false);
   }, []);
 
   // Queue management
@@ -251,6 +284,7 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
         toggleMute,
         resetTrack,
         toggleMiniPlayer,
+        closeMiniPlayer,
         addToQueue,
         removeFromQueue,
         clearQueue,

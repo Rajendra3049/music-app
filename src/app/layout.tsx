@@ -54,7 +54,9 @@ export default function RootLayout({
                     {children}
                   </div>
                 </main>
-                <Footer />
+                <div className="pb-[72px] sm:pb-[84px] md:pb-[96px]">
+                  <Footer />
+                </div>
                 <MiniPlayer />
               </div>
             </AudioPlayerProvider>

@@ -54,12 +54,12 @@ export function TopTrack() {
     >
       <div className="max-w-5xl mx-auto px-6">
         <div className="flex items-center justify-between mb-8">
-          <motion.h2 
+        <motion.h2 
             className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-400"
-            variants={bounceScale}
-          >
+          variants={bounceScale}
+        >
             Top Tracks
-          </motion.h2>
+        </motion.h2>
 
           {topTracks.length > 1 && (
             <div className="flex items-center space-x-4">
@@ -97,7 +97,7 @@ export function TopTrack() {
             initial={false}
             custom={direction}
           >
-            <motion.div
+            <motion.div 
               key={currentIndex}
               className="w-full"
               custom={direction}
@@ -141,12 +141,12 @@ export function TopTrack() {
                   }}
                   whileHover={{ scale: 1.2 }}
                   whileTap={{ scale: 0.8 }}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+                    />
+                  ))}
+                </div>
+              )}
+                    </div>
+                  </div>
 
       {/* Background Glow Effect */}
       <motion.div

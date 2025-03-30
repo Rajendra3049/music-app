@@ -1,5 +1,18 @@
+'use client';
+
 import { motion } from 'framer-motion';
-import { AudioControlsProps } from './types';
+import { PauseIcon, PlayIcon, RotateCcwIcon } from 'lucide-react';
+
+interface AudioControlsProps {
+  isPlaying: boolean;
+  onPlayPause: () => void;
+  onReset: () => void;
+  currentTime: number;
+  duration: number;
+  disabled?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+}
 
 export function AudioControls({
   isPlaying,
@@ -7,7 +20,9 @@ export function AudioControls({
   onReset,
   currentTime,
   duration,
-  disabled = false
+  disabled = false,
+  size = 'md',
+  className = '',
 }: AudioControlsProps) {
   // Format time in mm:ss
   const formatTime = (time: number) => {
@@ -16,34 +31,43 @@ export function AudioControls({
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
+  // Get icon size based on size prop
+  const getIconSize = () => {
+    switch (size) {
+      case 'sm':
+        return 20;
+      case 'lg':
+        return 28;
+      default:
+        return 24;
+    }
+  };
+
+  const iconSize = getIconSize();
+
   return (
-    <div className="flex items-center gap-4">
+    <div className={`flex items-center gap-4 ${className}`}>
       <motion.button
         className="p-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white disabled:opacity-50 shadow-lg shadow-purple-500/20"
-        whileHover={{ scale: 1.1 }}
+        whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={onPlayPause}
         disabled={disabled}
       >
-        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-          {isPlaying ? (
-            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
-          ) : (
-            <path d="M8 5v14l11-7z" />
-          )}
-        </svg>
+        {isPlaying ? (
+          <PauseIcon size={iconSize} className="relative left-[1px]" />
+        ) : (
+          <PlayIcon size={iconSize} className="relative left-[2px]" />
+        )}
       </motion.button>
 
-      <motion.button
-        className="p-2 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
+      <button
+        className="p-2 text-gray-400 hover:text-white transition-colors disabled:opacity-50"
         onClick={onReset}
+        disabled={disabled || currentTime < 3}
       >
-        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
-        </svg>
-      </motion.button>
+        <RotateCcwIcon size={iconSize - 4} />
+      </button>
 
       <div className="text-sm font-medium text-gray-300">
         {formatTime(currentTime)} / {formatTime(duration)}

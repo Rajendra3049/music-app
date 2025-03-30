@@ -2,11 +2,11 @@
 
 import { TooltipWrapper } from '@/components/ui/TooltipWrapper';
 import { useAudioPlayer } from '@/context/AudioPlayerContext';
+import { formatTime } from '@/lib/audio';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, ListMusic } from 'lucide-react';
+import { PauseIcon, PlayIcon, RotateCcwIcon, XIcon } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import { AudioControls } from './AudioControls';
 import { AudioProgress } from './AudioProgress';
 import { AudioVolume } from './AudioVolume';
 
@@ -15,13 +15,12 @@ export function MiniPlayer() {
     playerState,
     currentTrack,
     isMiniPlayerVisible,
-    toggleMiniPlayer,
     seekTo,
     setVolume,
     toggleMute,
     togglePlay,
     resetTrack,
-    queue
+    closeMiniPlayer,
   } = useAudioPlayer();
 
   // Refs for checking text truncation
@@ -56,104 +55,123 @@ export function MiniPlayer() {
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
-        className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-900/95 via-gray-900 to-gray-900/95 backdrop-blur-lg border-t border-white/10 p-4 z-50"
+        className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-900/95 via-gray-900 to-gray-900/95 backdrop-blur-lg border-t border-white/10 py-1 px-2 md:py-3 md:px-4 z-[100]"
         style={{ isolation: 'isolate' }}
       >
-        <div className="max-w-7xl mx-auto flex items-center gap-4">
-          {/* Track Info */}
-          <div className="flex items-center gap-3 flex-1 min-w-0">
-            <div className="relative w-12 h-12 flex-shrink-0">
-              <Image
-                src={currentTrack.coverImage}
-                alt={currentTrack.title}
-                fill
-                className="object-cover rounded-lg"
-              />
-            </div>
-            <div className="min-w-0">
-              <TooltipWrapper 
-                content={isTitleTruncated ? currentTrack.title : ""}
-                delayDuration={300}
-                side="top"
-                align="start"
-              >
-                <h3 
-                  ref={titleRef}
-                  className="text-white font-medium truncate"
-                >
-                  {currentTrack.title}
-                </h3>
-              </TooltipWrapper>
-              <TooltipWrapper 
-                content={isArtistTruncated ? currentTrack.artist : ""}
-                delayDuration={300}
-                side="bottom"
-                align="start"
-              >
-                <p 
-                  ref={artistRef}
-                  className="text-gray-400 text-sm truncate"
-                >
-                  {currentTrack.artist}
-                </p>
-              </TooltipWrapper>
-            </div>
-          </div>
+        <div className="max-w-7xl mx-auto relative">
+          {/* Close Button - Enhanced visibility */}
+          <motion.button
+            className="absolute -top-2 -right-2 p-2 text-white/90 hover:text-white bg-gray-800/80 hover:bg-gray-700/90 transition-all rounded-full shadow-lg hover:shadow-xl border border-white/10"
+            onClick={closeMiniPlayer}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <XIcon className="w-4 h-4" />
+          </motion.button>
 
-          {/* Audio Controls */}
-          <div className="flex-1 max-w-xl">
-            <div className="flex flex-col items-center gap-1">
-              <AudioControls
-                isPlaying={playerState.isPlaying}
-                onPlayPause={togglePlay}
-                onReset={resetTrack}
-                currentTime={playerState.currentTime}
-                duration={playerState.duration}
-                disabled={!!playerState.error}
-                size="md"
-              />
+          {/* Main Content Container with consistent padding */}
+          <div className="px-[2px] sm:px-1">
+            {/* Progress Bar Container - Consistent width */}
+            <div className="mb-1.5 md:mb-3 mx-[8px] sm:mx-[10px] md:mx-[12px]">
               <AudioProgress
                 currentTime={playerState.currentTime}
                 duration={playerState.duration}
                 onSeek={seekTo}
               />
             </div>
-          </div>
 
-          {/* Volume and Queue */}
-          <div className="flex items-center gap-4 flex-1 justify-end">
-            <AudioVolume
-              volume={playerState.volume}
-              isMuted={playerState.isMuted}
-              onVolumeChange={setVolume}
-              onMuteToggle={toggleMute}
-              size="sm"
-            />
+            <div className="flex items-center gap-2 md:gap-4">
+              {/* Track Info - Left Side */}
+              <div className="flex items-center gap-2 md:gap-3 min-w-0 w-[120px] sm:w-[180px] md:w-1/4">
+                <div className="relative w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex-shrink-0">
+                  <Image
+                    src={currentTrack.coverImage}
+                    alt={currentTrack.title}
+                    fill
+                    className="object-cover rounded-md md:rounded-lg"
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <TooltipWrapper 
+                    content={isTitleTruncated ? currentTrack.title : ""}
+                    delayDuration={300}
+                    side="top"
+                    align="start"
+                  >
+                    <h3 
+                      ref={titleRef}
+                      className="text-xs sm:text-sm md:text-base text-white font-medium truncate"
+                    >
+                      {currentTrack.title}
+                    </h3>
+                  </TooltipWrapper>
+                  <TooltipWrapper 
+                    content={isArtistTruncated ? currentTrack.artist : ""}
+                    delayDuration={300}
+                    side="bottom"
+                    align="start"
+                  >
+                    <p 
+                      ref={artistRef}
+                      className="text-[10px] sm:text-xs md:text-sm text-gray-400 truncate"
+                    >
+                      {currentTrack.artist}
+                    </p>
+                  </TooltipWrapper>
+                </div>
+              </div>
 
-            <button
-              className="p-2 text-gray-400 hover:text-white transition-colors relative group"
-              onClick={() => {}} // TODO: Implement queue panel
-            >
-              <ListMusic className="w-5 h-5" />
-              {queue.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                  {queue.length}
-                </span>
-              )}
-            </button>
+              {/* Center Section - Play/Pause Only */}
+              <div className="flex-1 flex justify-center items-center">
+                <motion.button
+                  className="p-2 sm:p-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white disabled:opacity-50 shadow-lg shadow-purple-500/20"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={togglePlay}
+                  disabled={!!playerState.error}
+                >
+                  {playerState.isPlaying ? (
+                    <PauseIcon className="w-5 h-5 sm:w-6 sm:h-6 relative left-[1px]" />
+                  ) : (
+                    <PlayIcon className="w-5 h-5 sm:w-6 sm:h-6 relative left-[2px]" />
+                  )}
+                </motion.button>
+              </div>
 
-            <button
-              className="p-2 text-gray-400 hover:text-white transition-colors"
-              onClick={toggleMiniPlayer}
-            >
-              <ChevronDown className="w-5 h-5" />
-            </button>
+              {/* Right Section - Controls with consistent width */}
+              <div className="flex items-center justify-end gap-2 md:gap-4 min-w-0 w-[120px] sm:w-[180px] md:w-1/4">
+                {/* Reset Button - Hidden on Mobile */}
+                <button
+                  className="hidden sm:flex items-center justify-center p-1.5 text-gray-400 hover:text-white transition-colors disabled:opacity-50"
+                  onClick={resetTrack}
+                  disabled={!!playerState.error || playerState.currentTime < 3}
+                >
+                  <RotateCcwIcon className="w-4 h-4 md:w-5 md:h-5" />
+                </button>
+
+                {/* Duration - Hidden on Mobile */}
+                <div className="hidden sm:flex items-center text-xs md:text-sm font-medium text-gray-400 tabular-nums whitespace-nowrap">
+                  {formatTime(playerState.currentTime)} / {formatTime(playerState.duration)}
+                </div>
+
+                {/* Volume Control */}
+                <div className="flex items-center">
+                  <AudioVolume
+                    volume={playerState.volume}
+                    isMuted={playerState.isMuted}
+                    onVolumeChange={setVolume}
+                    onMuteToggle={toggleMute}
+                    size="sm"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Error Message */}
         {playerState.error && (
-          <div className="absolute top-0 left-0 right-0 -translate-y-full p-2 bg-red-500 text-white text-sm text-center">
+          <div className="absolute top-0 left-0 right-0 -translate-y-full p-1.5 sm:p-2 bg-red-500 text-white text-xs sm:text-sm text-center">
             {playerState.error}
           </div>
         )}
