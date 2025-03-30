@@ -11,16 +11,16 @@ export default function HomePage() {
   const featuredMedia = getFeaturedMedia();
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div>
       {/* Hero Section */}
-      <div className="bg-white">
+      <div className="bg-white dark:bg-gray-800 transition-colors duration-200">
         <div className="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+            <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white sm:text-5xl md:text-6xl">
               <span className="block">Welcome to</span>
-              <span className="block text-indigo-600">{OWNER_NAME}</span>
+              <span className="block text-indigo-600 dark:text-indigo-400">{OWNER_NAME}</span>
             </h1>
-            <p className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+            <p className="mt-3 max-w-md mx-auto text-base text-gray-500 dark:text-gray-300 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
               Experience the best of music with {OWNER_NAME}. From electrifying performances to the latest tracks,
               we bring you the ultimate music experience.
             </p>
@@ -46,17 +46,17 @@ export default function HomePage() {
 
       {/* Featured Content Section */}
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-extrabold text-gray-900 mb-6">Featured Content</h2>
+        <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">Featured Content</h2>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {featuredContent.map((item) => (
-            <div key={item.id} className="bg-white overflow-hidden shadow rounded-lg">
+            <div key={item.id} className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg transition-colors duration-200">
               <div className="p-6">
-                <h3 className="text-lg font-medium text-gray-900">{item.title}</h3>
-                <p className="mt-2 text-sm text-gray-500">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">{item.title}</h3>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
                   {item.description}
                 </p>
                 <div className="mt-4">
-                  <Link href={`/${item.type}/${item.slug}`} className="text-indigo-600 hover:text-indigo-900">
+                  <Link href={`/${item.type}/${item.slug}`} className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300">
                     Read more &rarr;
                   </Link>
                 </div>
@@ -67,15 +67,15 @@ export default function HomePage() {
       </div>
 
       {/* Featured Media Section */}
-      <div className="bg-gray-50">
+      <div className="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-extrabold text-gray-900 mb-6">Latest Releases</h2>
+          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">Latest Releases</h2>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {featuredMedia
               .filter(media => media.type === 'audio')
               .slice(0, 3)
               .map((item) => (
-                <div key={item.id} className="bg-white overflow-hidden shadow rounded-lg">
+                <div key={item.id} className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg transition-colors duration-200">
                   {item.thumbnailUrl && (
                     <div className="relative h-48 w-full">
                       <Image 
@@ -87,8 +87,8 @@ export default function HomePage() {
                     </div>
                   )}
                   <div className="p-6">
-                    <h3 className="text-lg font-medium text-gray-900">{item.title}</h3>
-                    <p className="mt-2 text-sm text-gray-500">{item.description}</p>
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-white">{item.title}</h3>
+                    <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">{item.description}</p>
                     <div className="mt-4">
                       <audio className="w-full" controls src={item.url} />
                     </div>
