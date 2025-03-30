@@ -3,17 +3,18 @@ export interface ContentItem {
   title: string;
   description?: string;
   type: string;
-  slug: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface MediaItem {
   id: string;
   title: string;
   artist: string;
-  description?: string;
-  url: string;
-  thumbnailUrl?: string;
+  thumbnail?: string;
+  audioUrl?: string;
   duration?: number;
   type: 'audio' | 'video';
-  tags?: string[];
+  createdAt: string;
+  updatedAt: string;
 } 

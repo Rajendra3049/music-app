@@ -4,7 +4,6 @@ import { getMediaByType } from '@/db/media';
 
 export default function MusicPage() {
   const audioTracks = getMediaByType('audio');
-  console.log("🚀 ~ MusicPage ~ audioTracks:", audioTracks)
 
   return (
     <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
