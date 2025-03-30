@@ -1,13 +1,12 @@
 'use client';
 
+import { GridCard } from '@/components/music-cards/GridCard';
 import { useCarouselGestures } from '@/hooks/useCarouselGestures';
 import { carouselVariants, glowVariants, pulseVariants, staggerChildren } from '@/lib/animations';
 import { LatestRelease } from '@/types';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { MusicCard } from '../MusicCard';
-
 
 interface Props {
   latestReleases: LatestRelease[];
@@ -28,7 +27,7 @@ export function LatestReleases({ latestReleases }: Props) {
       } else if (window.innerWidth < 1024) {
         setItemsPerPage(2); // Tablet
       } else {
-        setItemsPerPage(2); // Desktop (can be increased if needed)
+        setItemsPerPage(3); // Desktop
       }
     };
 
@@ -57,11 +56,12 @@ export function LatestReleases({ latestReleases }: Props) {
 
   return (
     <motion.section 
-      className="relative py-20 px-6 overflow-hidden"
+      className="relative py-20 px-6 overflow-visible"
       variants={staggerChildren}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
+      style={{ isolation: 'isolate' }}
     >
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-12">
@@ -110,7 +110,7 @@ export function LatestReleases({ latestReleases }: Props) {
           >
             <motion.div
               key={currentIndex}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
               custom={direction}
               variants={carouselVariants}
               initial={shouldReduceMotion ? "center" : "enter"}
@@ -127,14 +127,19 @@ export function LatestReleases({ latestReleases }: Props) {
                   handlePrevious();
                 }
               }}
+              style={{ 
+                isolation: 'isolate',
+                perspective: '1000px'
+              }}
             >
               {latestReleases
                 .slice(currentIndex, currentIndex + itemsPerPage)
                 .map((release, index) => (
-                  <MusicCard
+                  <GridCard
                     key={release.id}
-                    release={release}
+                    track={release}
                     isActive={index === 0}
+                    className="relative"
                   />
                 ))}
             </motion.div>

@@ -16,6 +16,7 @@ export interface MediaItem {
     releaseDate?: string;
     genre?: string;
     isLatestRelease?: boolean;
+    isTopTrack?: boolean;
   };
   createdAt: string;
   updatedAt: string;
@@ -30,13 +31,14 @@ export const media: MediaItem[] = [
     title: 'Aigiri Nandini',
     type: 'audio',
     url: '/music/aigiri-nandini.mp3',
-    thumbnailUrl: 'https://via.placeholder.com/150',
+    thumbnailUrl: '/images/aigiri-nandini-cover.jpg',
     description: 'A mix of the Aigiri Nandini tracks to keep the party going',
     metadata: {
       artist: 'DJ VM Vishal',
       releaseDate: '2023-06-01',
       genre: 'Electronic/Pop',
-      isLatestRelease: true
+      isLatestRelease: true,
+      isTopTrack: true
     },
     createdAt: '2023-06-01T00:00:00Z',
     updatedAt: '2023-06-01T00:00:00Z'
@@ -46,13 +48,14 @@ export const media: MediaItem[] = [
     title: 'Shiva Shiva Shankara | Remix | Telgu Song | Dj Vm Vishal | Maha Shivratri 2025',
     type: 'audio',
     url: '/music/aigiri-nandini.mp3',
-    thumbnailUrl: 'https://via.placeholder.com/150',
+    thumbnailUrl: '/images/shiva-shiva-shankara-cover.jpg',
     description: 'The Shiva Shiva Shankara mashup featuring the biggest hits of 2023',
     metadata: {
       artist: 'DJ VM Vishal',
       releaseDate: '2023-07-15',
       genre: 'Bollywood',
-      isLatestRelease: true
+      isLatestRelease: true,
+      isTopTrack: true
     },
     createdAt: '2023-07-15T00:00:00Z',
     updatedAt: '2023-07-15T00:00:00Z'
@@ -68,7 +71,8 @@ export const media: MediaItem[] = [
       artist: 'DJ VM Vishal',
       releaseDate: '2023-08-10',
       genre: 'Ambient',
-      isLatestRelease: false
+      isLatestRelease: false,
+      isTopTrack: false
     },
     createdAt: '2023-08-10T00:00:00Z',
     updatedAt: '2023-08-10T00:00:00Z'
@@ -84,7 +88,8 @@ export const media: MediaItem[] = [
       artist: 'DJ VM Vishal',
       releaseDate: '2023-09-05',
       genre: 'EDM',
-      isLatestRelease: true
+      isLatestRelease: true,
+      isTopTrack: false
     },
     createdAt: '2023-09-05T00:00:00Z',
     updatedAt: '2023-09-05T00:00:00Z'

@@ -53,4 +53,10 @@ export interface AudioVolumeProps {
 export interface AudioWaveformProps {
   isPlaying: boolean;
   barCount?: number;
+  currentTime: number;
+  duration: number;
+  onSeek?: (time: number) => void;
+  isDragging?: boolean;
+  onDragStart?: () => void;
+  onDragEnd?: () => void;
 } 

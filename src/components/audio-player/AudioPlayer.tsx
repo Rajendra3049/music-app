@@ -1,11 +1,14 @@
+'use client';
+
+import { useAudioPlayer } from '@/context/AudioPlayerContext';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { AudioControls } from './AudioControls';
 import { AudioProgress } from './AudioProgress';
 import { AudioVolume } from './AudioVolume';
 import { AudioWaveform } from './AudioWaveform';
-import { AudioPlayerProps, AudioPlayerState } from './types';
+import { AudioPlayerProps } from './types';
 
 export function AudioPlayer({
   src,
@@ -19,147 +22,47 @@ export function AudioPlayer({
   onTimeUpdate,
   className = ''
 }: AudioPlayerProps) {
-  const [playerState, setPlayerState] = useState<AudioPlayerState>({
-    isPlaying: false,
-    currentTime: 0,
-    duration: 0,
-    error: null,
-    volume: 1,
-    isMuted: false
-  });
+  const {
+    playerState,
+    playTrack,
+    pauseTrack,
+    seekTo,
+    setVolume,
+    toggleMute,
+    resetTrack
+  } = useAudioPlayer();
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const isDraggingRef = useRef(false);
 
-  // Enhanced toggle play with error handling
-  const togglePlay = async () => {
-    if (audioRef.current) {
-      try {
-        if (playerState.isPlaying) {
-          await audioRef.current.pause();
-          onPause?.();
-        } else {
-          setPlayerState(prev => ({ ...prev, error: null }));
-          await audioRef.current.play();
-          onPlay?.();
-        }
-        setPlayerState(prev => ({ ...prev, isPlaying: !prev.isPlaying }));
-      } catch (err) {
-        const errorMessage = 'Unable to play audio. Please try again.';
-        setPlayerState(prev => ({
-          ...prev,
-          error: errorMessage,
-          isPlaying: false
-        }));
-        onError?.(errorMessage);
-        console.error('Playback error:', err);
-      }
+  // Handle play/pause
+  const handlePlayPause = useCallback(async () => {
+    if (playerState.isPlaying) {
+      await pauseTrack();
+      onPause?.();
+    } else {
+      await playTrack({ src, title, artist, coverImage });
+      onPlay?.();
     }
-  };
+  }, [playerState.isPlaying, playTrack, pauseTrack, src, title, artist, coverImage, onPlay, onPause]);
 
-  // Handle seeking
-  const handleSeek = useCallback((newTime: number) => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = newTime;
-      setPlayerState(prev => ({ ...prev, currentTime: newTime }));
-    }
-  }, []);
-
-  // Handle volume change
-  const handleVolumeChange = useCallback((newVolume: number) => {
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-      setPlayerState(prev => ({ 
-        ...prev, 
-        volume: newVolume,
-        isMuted: newVolume === 0
-      }));
-    }
-  }, []);
-
-  // Toggle mute
-  const handleMuteToggle = useCallback(() => {
-    if (audioRef.current) {
-      const newMuted = !playerState.isMuted;
-      audioRef.current.volume = newMuted ? 0 : playerState.volume;
-      setPlayerState(prev => ({ 
-        ...prev, 
-        isMuted: newMuted,
-        volume: newMuted ? 0 : prev.volume || 1
-      }));
-    }
-  }, [playerState.isMuted, playerState.volume]);
-
-  // Handle reset
-  const handleReset = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0;
-      setPlayerState(prev => ({ ...prev, currentTime: 0 }));
-      if (playerState.isPlaying) {
-        audioRef.current.play().catch(console.error);
-      }
-    }
-  }, [playerState.isPlaying]);
-
-  // Enhanced audio event handling
+  // Handle time updates
   useEffect(() => {
-    if (!audioRef.current) return;
+    onTimeUpdate?.(playerState.currentTime);
+  }, [playerState.currentTime, onTimeUpdate]);
 
-    const audio = audioRef.current;
-
-    const handleTimeUpdate = () => {
-      if (!isDraggingRef.current) {
-        const newTime = audio.currentTime;
-        setPlayerState(prev => ({ ...prev, currentTime: newTime }));
-        onTimeUpdate?.(newTime);
-      }
-    };
-
-    const handleLoadedMetadata = () => {
-      setPlayerState(prev => ({
-        ...prev,
-        duration: audio.duration,
-        error: null
-      }));
-    };
-
-    const handleEnded = () => {
-      setPlayerState(prev => ({
-        ...prev,
-        isPlaying: false,
-        currentTime: 0
-      }));
+  // Handle track end
+  useEffect(() => {
+    if (playerState.currentTime === 0 && !playerState.isPlaying) {
       onEnded?.();
-    };
+    }
+  }, [playerState.currentTime, playerState.isPlaying, onEnded]);
 
-    const handleError = () => {
-      const errorMessage = 'Error loading audio file. Please try again.';
-      setPlayerState(prev => ({
-        ...prev,
-        error: errorMessage,
-        isPlaying: false
-      }));
-      onError?.(errorMessage);
-    };
-
-    const handleCanPlayThrough = () => {
-      setPlayerState(prev => ({ ...prev, error: null }));
-    };
-
-    audio.addEventListener('timeupdate', handleTimeUpdate);
-    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-    audio.addEventListener('ended', handleEnded);
-    audio.addEventListener('error', handleError);
-    audio.addEventListener('canplaythrough', handleCanPlayThrough);
-
-    return () => {
-      audio.removeEventListener('timeupdate', handleTimeUpdate);
-      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      audio.removeEventListener('ended', handleEnded);
-      audio.removeEventListener('error', handleError);
-      audio.removeEventListener('canplaythrough', handleCanPlayThrough);
-    };
-  }, [onEnded, onError, onTimeUpdate]);
+  // Handle errors
+  useEffect(() => {
+    if (playerState.error) {
+      onError?.(playerState.error);
+    }
+  }, [playerState.error, onError]);
 
   return (
     <div className={`bg-gradient-to-r from-gray-900 to-black/80 rounded-xl p-6 backdrop-blur-sm border border-white/10 ${className}`}>
@@ -195,17 +98,17 @@ export function AudioPlayer({
             <p className="text-gray-400">{artist}</p>
           </div>
 
-          {/* Audio Element */}
-          <audio
-            ref={audioRef}
-            src={src}
-            preload="metadata"
-            crossOrigin="anonymous"
-          />
-
           {/* Waveform Visualization */}
-          <div className="relative h-24 bg-black/30 rounded-lg overflow-hidden cursor-pointer">
-            <AudioWaveform isPlaying={playerState.isPlaying} />
+          <div className="relative h-24 bg-black/30 rounded-lg overflow-hidden group">
+            <AudioWaveform 
+              isPlaying={playerState.isPlaying} 
+              currentTime={playerState.currentTime}
+              duration={playerState.duration}
+              onSeek={seekTo}
+              isDragging={isDraggingRef.current}
+              onDragStart={() => isDraggingRef.current = true}
+              onDragEnd={() => isDraggingRef.current = false}
+            />
           </div>
 
           {/* Error Message */}
@@ -220,17 +123,18 @@ export function AudioPlayer({
             <AudioProgress
               currentTime={playerState.currentTime}
               duration={playerState.duration}
-              onSeek={handleSeek}
+              onSeek={seekTo}
               isDragging={isDraggingRef.current}
               onDragStart={() => isDraggingRef.current = true}
               onDragEnd={() => isDraggingRef.current = false}
+              size="md"
             />
 
             <div className="flex items-center gap-6">
               <AudioControls
                 isPlaying={playerState.isPlaying}
-                onPlayPause={togglePlay}
-                onReset={handleReset}
+                onPlayPause={handlePlayPause}
+                onReset={resetTrack}
                 currentTime={playerState.currentTime}
                 duration={playerState.duration}
                 disabled={!!playerState.error}
@@ -239,8 +143,8 @@ export function AudioPlayer({
               <AudioVolume
                 volume={playerState.volume}
                 isMuted={playerState.isMuted}
-                onVolumeChange={handleVolumeChange}
-                onMuteToggle={handleMuteToggle}
+                onVolumeChange={setVolume}
+                onMuteToggle={toggleMute}
               />
             </div>
           </div>

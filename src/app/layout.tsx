@@ -1,5 +1,7 @@
+import { MiniPlayer } from '@/components/audio-player/MiniPlayer';
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { AudioPlayerProvider } from '@/context/AudioPlayerContext';
 import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import type { Metadata } from "next";
@@ -44,15 +46,18 @@ export default function RootLayout({
       >
         <AuthProvider>
           <ThemeProvider>
-            <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
-              <Header />
-              <main className="flex-grow w-full max-w-[100vw] overflow-x-hidden">
-                <div className="mx-auto w-full">
-                  {children}
-                </div>
-              </main>
-              <Footer />
-            </div>
+            <AudioPlayerProvider>
+              <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
+                <Header />
+                <main className="flex-grow w-full max-w-[100vw] overflow-x-hidden">
+                  <div className="mx-auto w-full">
+                    {children}
+                  </div>
+                </main>
+                <Footer />
+                <MiniPlayer />
+              </div>
+            </AudioPlayerProvider>
           </ThemeProvider>
         </AuthProvider>
       </body>

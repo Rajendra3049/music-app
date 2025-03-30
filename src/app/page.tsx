@@ -12,12 +12,13 @@ export default function HomePage() {
     id: dbMedia.id,
     title: dbMedia.title,
     artist: dbMedia.metadata?.artist || 'Unknown Artist',
-    thumbnail: dbMedia.thumbnailUrl,
+    coverImage: dbMedia.thumbnailUrl || '/images/default-cover.jpg',
     audioUrl: dbMedia.url,
     duration: dbMedia.metadata?.duration ? parseInt(dbMedia.metadata.duration) : undefined,
-    type: dbMedia.type as 'audio' | 'video',
-    createdAt: dbMedia.createdAt,
-    updatedAt: dbMedia.updatedAt
+    description: dbMedia.description,
+    releaseDate: dbMedia.metadata?.releaseDate,
+    genre: dbMedia.metadata?.genre,
+    tags: []
   }));
 
   return (
