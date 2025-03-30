@@ -11,12 +11,8 @@ export interface LatestRelease {
   id: string;
   title: string;
   artist: string;
-  thumbnail?: string;
-  audioUrl?: string;
-  duration?: number;
-  type: 'audio' | 'video';
-  createdAt: string;
-  updatedAt: string;
+  audioUrl: string;
+  description?: string;
 }
 
 // Alias MediaItem to LatestRelease for backward compatibility

@@ -15,7 +15,7 @@ export interface MediaItem {
     album?: string;
     releaseDate?: string;
     genre?: string;
-    featured?: boolean;
+    isLatestRelease?: boolean;
   };
   createdAt: string;
   updatedAt: string;
@@ -36,14 +36,14 @@ export const media: MediaItem[] = [
       artist: 'DJ VM Vishal',
       releaseDate: '2023-06-01',
       genre: 'Electronic/Pop',
-      featured: true
+      isLatestRelease: true
     },
     createdAt: '2023-06-01T00:00:00Z',
     updatedAt: '2023-06-01T00:00:00Z'
   },
   {
     id: '2',
-    title: 'Shiva Shiva Shankara',
+    title: 'Shiva Shiva Shankara | Remix | Telgu Song | Dj Vm Vishal | Maha Shivratri 2025',
     type: 'audio',
     url: '/music/aigiri-nandini.mp3',
     thumbnailUrl: 'https://via.placeholder.com/150',
@@ -52,7 +52,7 @@ export const media: MediaItem[] = [
       artist: 'DJ VM Vishal',
       releaseDate: '2023-07-15',
       genre: 'Bollywood',
-      featured: true
+      isLatestRelease: true
     },
     createdAt: '2023-07-15T00:00:00Z',
     updatedAt: '2023-07-15T00:00:00Z'
@@ -68,7 +68,7 @@ export const media: MediaItem[] = [
       artist: 'DJ VM Vishal',
       releaseDate: '2023-08-10',
       genre: 'Ambient',
-      featured: false
+      isLatestRelease: false
     },
     createdAt: '2023-08-10T00:00:00Z',
     updatedAt: '2023-08-10T00:00:00Z'
@@ -84,7 +84,7 @@ export const media: MediaItem[] = [
       artist: 'DJ VM Vishal',
       releaseDate: '2023-09-05',
       genre: 'EDM',
-      featured: true
+      isLatestRelease: true
     },
     createdAt: '2023-09-05T00:00:00Z',
     updatedAt: '2023-09-05T00:00:00Z'
@@ -100,7 +100,7 @@ export const media: MediaItem[] = [
       artist: 'DJ VM Vishal',
       releaseDate: '2023-10-12',
       genre: 'Chillout',
-      featured: false
+      isLatestRelease: true
     },
     createdAt: '2023-10-12T00:00:00Z',
     updatedAt: '2023-10-12T00:00:00Z'
@@ -124,6 +124,6 @@ export const getMediaByType = (type: MediaItem['type']): MediaItem[] => {
 /**
  * Get featured media
  */
-export const getFeaturedMedia = (): MediaItem[] => {
-  return media.filter(item => item.metadata?.featured);
+export const getLatestReleaseAudio = (): MediaItem[] => {
+  return media.filter(item => item.metadata?.isLatestRelease);
 }; 

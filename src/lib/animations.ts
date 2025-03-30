@@ -1,18 +1,72 @@
 import { Variants } from 'framer-motion';
 
-export const pulseVariants: Variants = {
-  initial: { scale: 1 },
-  animate: {
-    scale: [1, 1.02, 1],
-    filter: [
-      'brightness(1)',
-      'brightness(1.1)',
-      'brightness(1)'
-    ],
+export const staggerChildren: Variants = {
+  hidden: {},
+  visible: {
     transition: {
-      duration: 2,
-      ease: "easeInOut",
-      repeat: Infinity,
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+export const pulseVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 20,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: 'easeOut',
+    },
+  },
+};
+
+export const carouselVariants: Variants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? '100%' : '-100%',
+    opacity: 0,
+    transition: {
+      x: { type: "tween", duration: 0.4, ease: "easeInOut" },
+      opacity: { duration: 0.3 }
+    }
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      x: { type: "tween", duration: 0.4, ease: "easeInOut" },
+      opacity: { duration: 0.3 }
+    }
+  },
+  exit: (direction: number) => ({
+    x: direction < 0 ? '100%' : '-100%',
+    opacity: 0,
+    transition: {
+      x: { type: "tween", duration: 0.4, ease: "easeInOut" },
+      opacity: { duration: 0.3 }
+    }
+  })
+};
+
+export const cardHoverVariants: Variants = {
+  initial: { scale: 1 },
+  hover: {
+    scale: 1.02,
+    transition: {
+      type: "tween",
+      duration: 0.2,
+      ease: "easeOut"
+    }
+  },
+  tap: {
+    scale: 0.98,
+    transition: {
+      type: "tween",
+      duration: 0.1,
+      ease: "easeOut"
     }
   }
 };
@@ -37,17 +91,6 @@ export const spinVariants: Variants = {
       duration: 20,
       ease: "linear",
       repeat: Infinity,
-    }
-  }
-};
-
-export const staggerChildren = {
-  initial: { opacity: 0, y: 20 },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      staggerChildren: 0.2,
     }
   }
 };
@@ -79,20 +122,18 @@ export const slideInRight: Variants = {
 };
 
 export const glowVariants: Variants = {
-  initial: { opacity: 0.5 },
-  animate: {
-    opacity: [0.5, 1, 0.5],
-    boxShadow: [
-      '0 0 20px rgba(79, 70, 229, 0.3)',
-      '0 0 40px rgba(79, 70, 229, 0.6)',
-      '0 0 20px rgba(79, 70, 229, 0.3)'
-    ],
+  hidden: {
+    opacity: 0,
+    scale: 0.8,
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
     transition: {
-      duration: 3,
-      ease: "easeInOut",
-      repeat: Infinity,
-    }
-  }
+      duration: 0.8,
+      ease: 'easeOut',
+    },
+  },
 };
 
 export const bounceScale: Variants = {

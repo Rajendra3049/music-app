@@ -1,11 +1,11 @@
 import { HomeWrapper } from '@/components/home/HomeWrapper';
 import { getFeaturedContent } from '@/db/content';
-import { getFeaturedMedia } from '@/db/media';
+import { getLatestReleaseAudio } from '@/db/media';
 import { MediaItem as FrontendMediaItem } from '@/types';
 
 export default function HomePage() {
   const featuredContent = getFeaturedContent();
-  const dbFeaturedMedia = getFeaturedMedia().filter(media => media.type === 'audio').slice(0, 3);
+  const dbFeaturedMedia = getLatestReleaseAudio();
 
   // Transform db media items to frontend media items
   const featuredMedia: FrontendMediaItem[] = dbFeaturedMedia.map(dbMedia => ({
