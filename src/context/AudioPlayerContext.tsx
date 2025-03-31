@@ -1,16 +1,16 @@
 'use client';
 
 import { AudioPlayerState } from '@/components/audio-player/types';
-import { LatestRelease } from '@/types';
+import { MediaItem } from '@/db/media';
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 interface AudioPlayerContextType {
   playerState: AudioPlayerState;
-  currentTrack: LatestRelease | null;
+  currentTrack: MediaItem | null;
   isMiniPlayerVisible: boolean;
-  queue: LatestRelease[];
-  playTrack: (track: LatestRelease) => Promise<void>;
-  pauseTrack: () => Promise<void>;
+  queue: MediaItem[];
+  play: (track: MediaItem) => Promise<void>;
+  pause: () => Promise<void>;
   togglePlay: () => Promise<void>;
   seekTo: (time: number) => void;
   setVolume: (volume: number) => void;
@@ -18,7 +18,7 @@ interface AudioPlayerContextType {
   resetTrack: () => void;
   toggleMiniPlayer: () => void;
   closeMiniPlayer: () => Promise<void>;
-  addToQueue: (track: LatestRelease) => void;
+  addToQueue: (track: MediaItem) => void;
   removeFromQueue: (trackId: string) => void;
   clearQueue: () => void;
   playNext: () => Promise<void>;
@@ -38,8 +38,8 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
     isMuted: false
   });
 
-  const [currentTrack, setCurrentTrack] = useState<LatestRelease | null>(null);
-  const [queue, setQueue] = useState<LatestRelease[]>([]);
+  const [currentTrack, setCurrentTrack] = useState<MediaItem | null>(null);
+  const [queue, setQueue] = useState<MediaItem[]>([]);
   const [isMiniPlayerVisible, setIsMiniPlayerVisible] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isDraggingRef = useRef(false);
@@ -103,7 +103,7 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
   }, []);
 
   // Handle track changes with improved error handling
-  const playTrack = useCallback(async (track: LatestRelease) => {
+  const play = useCallback(async (track: MediaItem) => {
     if (!audioRef.current) return;
 
     try {
@@ -113,7 +113,7 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
       }
 
       // Set new track and ensure MiniPlayer is visible
-      audioRef.current.src = track.audioUrl;
+      audioRef.current.src = track.url;
       setCurrentTrack(track);
       setIsMiniPlayerVisible(true);
 
@@ -144,7 +144,7 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
     }
   }, [playerState.isPlaying]);
 
-  const pauseTrack = useCallback(async () => {
+  const pause = useCallback(async () => {
     if (!audioRef.current) return;
     await audioRef.current.pause();
     setPlayerState(prev => ({ ...prev, isPlaying: false }));
@@ -153,12 +153,12 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
   const togglePlay = useCallback(async () => {
     if (!audioRef.current || !currentTrack) return;
     if (playerState.isPlaying) {
-      await pauseTrack();
+      await pause();
     } else {
       await audioRef.current.play();
       setPlayerState(prev => ({ ...prev, isPlaying: true }));
     }
-  }, [playerState.isPlaying, pauseTrack, currentTrack]);
+  }, [playerState.isPlaying, pause, currentTrack]);
 
   const seekTo = useCallback((time: number) => {
     if (!audioRef.current) return;
@@ -225,7 +225,7 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
   }, []);
 
   // Queue management
-  const addToQueue = useCallback((track: LatestRelease) => {
+  const addToQueue = useCallback((track: MediaItem) => {
     setQueue(prev => [...prev, track]);
   }, []);
 
@@ -244,12 +244,12 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
     const nextTrack = queue[currentIndex + 1];
     
     if (nextTrack) {
-      await playTrack(nextTrack);
+      await play(nextTrack);
     } else if (queue.length > 0) {
       // Loop back to first track
-      await playTrack(queue[0]);
+      await play(queue[0]);
     }
-  }, [currentTrack, queue, playTrack]);
+  }, [currentTrack, queue, play]);
 
   const playPrevious = useCallback(async () => {
     if (!currentTrack || queue.length === 0) return;
@@ -258,12 +258,12 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
     const previousTrack = queue[currentIndex - 1];
     
     if (previousTrack) {
-      await playTrack(previousTrack);
+      await play(previousTrack);
     } else if (queue.length > 0) {
       // Loop to last track
-      await playTrack(queue[queue.length - 1]);
+      await play(queue[queue.length - 1]);
     }
-  }, [currentTrack, queue, playTrack]);
+  }, [currentTrack, queue, play]);
 
   const isCurrentTrack = useCallback((trackId: string) => {
     return currentTrack?.id === trackId;
@@ -276,8 +276,8 @@ export function AudioPlayerProvider({ children }: { children: React.ReactNode })
         currentTrack,
         isMiniPlayerVisible,
         queue,
-        playTrack,
-        pauseTrack,
+        play,
+        pause,
         togglePlay,
         seekTo,
         setVolume,
