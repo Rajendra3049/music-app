@@ -187,9 +187,9 @@ export function Header() {
             >
               <Link 
                 href={isLoggedIn ? "/favorites" : "/auth/signin"}
-                className="p-2 md:p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="inline-flex items-center justify-center"
               >
-                <HeartIcon className="h-5 w-5 md:h-6 md:w-6 text-pink-500" />
+                <HeartIcon className="h-5 w-5 md:h-6 md:w-6 text-pink-500 hover:text-pink-600 transition-colors" />
               </Link>
             </motion.div>
 

@@ -72,6 +72,7 @@ export function GridCard({ track, isActive = false, className = '' }: GridCardPr
         <div className="space-y-1.5">
           {/* Title Row with Play Button */}
           <div className="flex items-center gap-1.5 min-w-0">
+            <div className='max-w-[90%]'>
             <TooltipWrapper 
               content={isTitleTruncated ? track.title : ""}
               delayDuration={300}
@@ -85,6 +86,7 @@ export function GridCard({ track, isActive = false, className = '' }: GridCardPr
                 {track.title}
               </h3>
             </TooltipWrapper>
+            </div>
             <div className="flex-shrink-0 ml-auto">
               <PlayButton track={track} size="sm" variant="minimal" />
             </div>

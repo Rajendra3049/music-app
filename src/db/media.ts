@@ -131,4 +131,4 @@ export const getMediaByType = (type: MediaItem['type']): MediaItem[] => {
  */
 export const getLatestReleaseAudio = (): MediaItem[] => {
   return media.filter(item => item.metadata?.isLatestRelease);
-}; 
+};
