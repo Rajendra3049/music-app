@@ -22,11 +22,11 @@ export default function HomePage() {
   }));
 
   return (
-    <div className="min-h-screen">
+    <main className="min-h-screen">
       <HomeWrapper 
         featuredContent={featuredContent}
         featuredMedia={featuredMedia}
       />
-    </div>
+    </main>
   );
 }

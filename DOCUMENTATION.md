@@ -22,6 +22,7 @@ src/
 ├── components/            # Reusable components
 │   ├── audio-player/      # Audio playback components
 │   ├── music-cards/       # Music track card components
+│   ├── video/            # Video components
 │   ├── layout/           # Layout components
 │   └── ui/               # UI components
 ├── context/              # React Context providers
@@ -33,6 +34,63 @@ src/
 ```
 
 ## Core Components
+
+### Video Components (`/components/video/`)
+
+#### `VideoCarousel.tsx`
+- Responsive video carousel component
+- Features:
+  - Smooth horizontal scrolling
+  - Dynamic selection indicators
+  - Playing state animations
+  - Edge card visibility handling
+  - Responsive navigation arrows
+- Props:
+  ```typescript
+  interface VideoCarouselProps {
+    videos: Video[];
+    currentVideoId?: string;
+    onVideoSelect: (video: Video) => void;
+    isPlaying?: boolean;
+  }
+  ```
+- Visual States:
+  - Selected Card:
+    - Glowing outline effect
+    - Primary color accents
+    - Scale animations
+    - Music wave animation when playing
+  - Non-selected Cards:
+    - Subtle hover effects
+    - Clean backdrop blur
+    - Smooth transitions
+  - Playing State:
+    - Animated equalizer bars
+    - Pulsing effects
+    - Enhanced visual feedback
+  - Navigation:
+    - Dynamic arrow visibility
+    - Smooth scroll behavior
+    - Safe area handling
+  - Accessibility:
+    - Keyboard navigation
+    - ARIA labels
+    - Focus management
+
+#### `NowPlayingEqualizer.tsx`
+- Animated equalizer component
+- Features:
+  - Dynamic bar animations
+  - Synchronized movement
+  - Customizable colors
+- Props:
+  ```typescript
+  interface NowPlayingEqualizerProps {
+    className?: string;
+    barCount?: number;
+    color?: string;
+  }
+  ```
 
 ### Audio Player Components (`/components/audio-player/`)
 
@@ -75,15 +133,17 @@ src/
 #### `GridCard.tsx`
 - Card component for grid layout
 - Features:
-  - Hover animations
-  - Play button overlay
+  - Enhanced hover animations
+  - Play button overlay with animations
   - Truncation with tooltips
-  - Active state styling
+  - Active state styling with glow effects
+  - Playing state indicators
 - Props:
   ```typescript
   interface GridCardProps {
     track: LatestRelease;
     isActive?: boolean;
+    isPlaying?: boolean;
     className?: string;
   }
   ```
@@ -92,13 +152,15 @@ src/
 - Larger card for featured tracks
 - Features:
   - Rich metadata display
-  - Description with truncation
+  - Animated description truncation
   - Genre and release date tags
   - Enhanced hover effects
+  - Playing state animations
 - Props:
   ```typescript
-  interface Props {
+  interface FeaturedCardProps {
     track: LatestRelease;
+    isPlaying?: boolean;
     className?: string;
   }
   ```
@@ -122,14 +184,16 @@ src/
   - Customizable positioning
   - Delay duration
   - Fade animations
+  - Rich content support
 - Props:
   ```typescript
-  interface Props {
+  interface TooltipWrapperProps {
     children: React.ReactNode;
-    content: string;
+    content: string | React.ReactNode;
     side?: "top" | "right" | "bottom" | "left";
     align?: "start" | "center" | "end";
     delayDuration?: number;
+    className?: string;
   }
   ```
 
@@ -179,6 +243,18 @@ src/
 
 ## Types & Interfaces (`/types/`)
 
+### `Video.ts`
+```typescript
+interface Video {
+  id: string;
+  title: string;
+  thumbnailUrl: string;
+  duration: string;
+  views: number;
+  description?: string;
+}
+```
+
 ### `Track.ts`
 ```typescript
 interface Track {
@@ -196,6 +272,131 @@ interface LatestRelease extends Track {
   releaseDate?: string;
 }
 ```
+
+## Visual Design System
+
+### Card States
+- Normal State:
+  - Clean background
+  - Subtle shadows
+  - Standard spacing
+- Hover State:
+  - Scale transform
+  - Enhanced shadows
+  - Backdrop blur
+- Selected State:
+  - Glowing outline
+  - Primary color accents
+  - Elevated z-index
+- Playing State:
+  - Animated indicators
+  - Music wave visualization
+  - Pulsing effects
+
+### Animations
+- Hover Animations:
+  - Scale: 1.02
+  - Duration: 0.2s
+  - Smooth easing
+- Selection Animations:
+  - Outline glow
+  - Pulse effect
+  - Spring transitions
+- Playing Animations:
+  - Music wave bars
+  - Synchronized movement
+  - Infinite loop
+
+### Layout & Spacing
+- Card Dimensions:
+  - Width: 300px
+  - Aspect ratio: 16:9 (video)
+- Spacing System:
+  - Gap between cards: 1.5rem
+  - Padding: 1rem
+  - Safe area insets
+- Container Layout:
+  - Overflow handling
+  - Edge visibility
+  - Responsive margins
+
+### Color System
+- Primary Colors:
+  - Active: primary-500
+  - Hover: primary-400
+  - Glow: primary-500/30
+- Background Colors:
+  - Base: gray-900
+  - Hover: gray-800
+  - Selected: gray-800/80
+- Text Colors:
+  - Primary: white
+  - Secondary: gray-400
+  - Accent: primary-400
+
+## Best Practices & Conventions
+
+### Component Structure
+- Consistent props interface naming
+- Clear component responsibility
+- Proper TypeScript typing
+- Responsive design patterns
+
+### Animation Guidelines
+- Use spring animations for natural movement
+- Consistent timing functions
+- Performance-optimized transforms
+- Proper cleanup on unmount
+
+### Accessibility Features
+- ARIA labels for interactive elements
+- Keyboard navigation support
+- Screen reader compatibility
+- Focus management
+- Color contrast compliance
+
+### Performance Optimizations
+- Efficient re-renders
+- Proper event cleanup
+- Optimized animations
+- Lazy loading where appropriate
+
+## Current Implementation Status
+
+### Completed Features
+- ✅ Video carousel with advanced animations
+- ✅ Dynamic selection indicators
+- ✅ Playing state visualizations
+- ✅ Responsive layout handling
+- ✅ Edge card visibility
+- ✅ Music wave animations
+- ✅ Enhanced tooltip system
+- ✅ Improved card interactions
+
+### In Progress
+- 🔄 User authentication
+- 🔄 Download system
+- 🔄 Playlist management
+
+### Planned Features
+- ⏳ Social media integration
+- ⏳ Advanced audio visualizations
+- ⏳ User profile system
+
+## Contributing Guidelines
+
+### Development Workflow
+1. Feature branch creation
+2. Component development
+3. Testing implementation
+4. Documentation update
+5. Pull request submission
+
+### Code Standards
+- ESLint configuration
+- Prettier formatting
+- TypeScript strict mode
+- Component documentation
 
 ## Utilities & Constants
 
@@ -221,51 +422,6 @@ interface LatestRelease extends Track {
   - Tracks
   - Featured releases
   - Artists
-
-## Current Implementation Status
-
-### Completed Features
-- ✅ Basic audio playback functionality
-- ✅ Responsive music cards
-- ✅ Mini player implementation
-- ✅ Tooltip system
-- ✅ Track information display
-
-### In Progress
-- 🔄 User authentication
-- 🔄 Download system
-- 🔄 Playlist management
-
-### Planned Features
-- ⏳ Social media integration
-- ⏳ Advanced audio visualizations
-- ⏳ User profile system
-
-## Best Practices & Conventions
-
-### Component Structure
-- Consistent props interface naming
-- Clear component responsibility
-- Proper TypeScript typing
-- Responsive design patterns
-
-### Styling Approach
-- Tailwind CSS utility classes
-- Consistent spacing scale
-- Responsive breakpoints
-- Dark mode support
-
-### State Management
-- Context for global state
-- Local state for component-specific data
-- Proper prop drilling prevention
-- Performance optimization
-
-### Code Organization
-- Feature-based folder structure
-- Clear file naming conventions
-- Consistent import ordering
-- Proper code documentation
 
 ## Performance Considerations
 
@@ -295,17 +451,21 @@ interface LatestRelease extends Track {
 - Documentation updates
 - Code refactoring
 
-## Contributing Guidelines
+## Current Implementation Status
 
-### Development Workflow
-1. Feature branch creation
-2. Component development
-3. Testing implementation
-4. Documentation update
-5. Pull request submission
+### Completed Features
+- ✅ Basic audio playback functionality
+- ✅ Responsive music cards
+- ✅ Mini player implementation
+- ✅ Tooltip system
+- ✅ Track information display
 
-### Code Standards
-- ESLint configuration
-- Prettier formatting
-- TypeScript strict mode
-- Component documentation 
+### In Progress
+- 🔄 User authentication
+- 🔄 Download system
+- 🔄 Playlist management
+
+### Planned Features
+- ⏳ Social media integration
+- ⏳ Advanced audio visualizations
+- ⏳ User profile system 
