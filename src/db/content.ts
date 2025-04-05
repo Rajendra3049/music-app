@@ -99,17 +99,3 @@ export const content: ContentItem[] = [
 export const getContentBySlug = (slug: string): ContentItem | undefined => {
   return content.find(item => item.slug === slug && item.published);
 };
-
-/**
- * Get content by type
- */
-export const getContentByType = (type: ContentItem['type']): ContentItem[] => {
-  return content.filter(item => item.type === type && item.published);
-};
-
-/**
- * Get featured content
- */
-export const getFeaturedContent = (): ContentItem[] => {
-  return content.filter(item => item.published && item.metadata?.featured);
-}; 

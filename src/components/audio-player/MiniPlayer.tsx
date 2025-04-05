@@ -84,16 +84,22 @@ export function MiniPlayer() {
               {/* Track Info - Left Side */}
               <div className="flex items-center gap-2 md:gap-3 min-w-0 w-[120px] sm:w-[180px] md:w-1/4">
                 <div className="relative w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex-shrink-0">
-                  <Image
-                    src={currentTrack.coverImage}
-                    alt={currentTrack.title}
-                    fill
-                    className="object-cover rounded-md md:rounded-lg"
-                  />
+                  {currentTrack?.thumbnailUrl ? (
+                    <Image
+                      src={currentTrack.thumbnailUrl}
+                      alt={currentTrack.title || 'Track cover'}
+                      fill
+                      className="object-cover rounded-md md:rounded-lg"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-800 rounded-md md:rounded-lg flex items-center justify-center">
+                      <div className="w-6 h-6 text-gray-600">🎵</div>
+                    </div>
+                  )}
                 </div>
                 <div className="min-w-0 flex-1">
                   <TooltipWrapper 
-                    content={isTitleTruncated ? currentTrack.title : ""}
+                    content={isTitleTruncated ? currentTrack?.title || "" : ""}
                     delayDuration={300}
                     side="top"
                     align="start"
@@ -102,11 +108,11 @@ export function MiniPlayer() {
                       ref={titleRef}
                       className="text-xs sm:text-sm md:text-base text-white font-medium truncate"
                     >
-                      {currentTrack.title}
+                      {currentTrack?.title || "No track selected"}
                     </h3>
                   </TooltipWrapper>
                   <TooltipWrapper 
-                    content={isArtistTruncated ? currentTrack.artist : ""}
+                    content={isArtistTruncated ? currentTrack?.metadata?.artist || "" : ""}
                     delayDuration={300}
                     side="bottom"
                     align="start"
@@ -115,7 +121,7 @@ export function MiniPlayer() {
                       ref={artistRef}
                       className="text-[10px] sm:text-xs md:text-sm text-gray-400 truncate"
                     >
-                      {currentTrack.artist}
+                      {currentTrack?.metadata?.artist || "Unknown artist"}
                     </p>
                   </TooltipWrapper>
                 </div>

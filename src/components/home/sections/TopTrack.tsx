@@ -3,15 +3,20 @@
 import { FeaturedCard } from '@/components/music-cards/FeaturedCard';
 import { media } from '@/db/media';
 import { useCarouselGestures } from '@/hooks/useCarouselGestures';
-import { bounceScale, carouselVariants, glowVariants, staggerChildren } from '@/lib/animations';
+import {
+  bounceScale,
+  carouselVariants,
+  glowVariants,
+  staggerChildren,
+} from '@/lib/animations';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 
 // Get top tracks from media database
 const topTracks = media
-  .filter(item => item.metadata?.isTopTrack)
-  .map(item => ({
+  .filter((item) => item.metadata?.isTopTrack)
+  .map((item) => ({
     id: item.id,
     title: item.title,
     artist: item.metadata?.artist || '',
@@ -45,21 +50,21 @@ export function TopTrack() {
   });
 
   return (
-    <motion.section 
-      className="relative py-16 bg-gradient-to-r from-black via-purple-900/20 to-black overflow-hidden"
+    <motion.section
+      className="relative overflow-hidden bg-gradient-to-r from-black via-purple-900/20 to-black py-16"
       variants={staggerChildren}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
     >
-      <div className="max-w-5xl mx-auto px-6">
-        <div className="flex items-center justify-between mb-8">
-        <motion.h2 
-            className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-400"
-          variants={bounceScale}
-        >
+      <div className="mx-auto max-w-5xl px-6">
+        <div className="mb-8 flex items-center justify-between">
+          <motion.h2
+            className="bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-400 bg-clip-text text-4xl font-bold text-transparent md:text-5xl"
+            variants={bounceScale}
+          >
             Top Tracks
-        </motion.h2>
+          </motion.h2>
 
           {topTracks.length > 1 && (
             <div className="flex items-center space-x-4">
@@ -68,44 +73,40 @@ export function TopTrack() {
               </span>
               <div className="flex items-center space-x-2">
                 <motion.button
-                  className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white"
+                  className="rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={handlePrevious}
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <ChevronLeft className="h-5 w-5" />
                 </motion.button>
                 <motion.button
-                  className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white"
+                  className="rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={handleNext}
                 >
-                  <ChevronRight className="w-5 h-5" />
+                  <ChevronRight className="h-5 w-5" />
                 </motion.button>
               </div>
             </div>
           )}
         </div>
-        
-        <div 
+
+        <div
           ref={containerRef}
           className={`relative touch-pan-y ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
         >
-          <AnimatePresence
-            mode="wait"
-            initial={false}
-            custom={direction}
-          >
-            <motion.div 
+          <AnimatePresence mode="wait" initial={false} custom={direction}>
+            <motion.div
               key={currentIndex}
               className="w-full"
               custom={direction}
               variants={carouselVariants}
-              initial={shouldReduceMotion ? "center" : "enter"}
+              initial={shouldReduceMotion ? 'center' : 'enter'}
               animate="center"
               exit="exit"
-              drag={topTracks.length > 1 ? "x" : false}
+              drag={topTracks.length > 1 ? 'x' : false}
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.7}
               onDragEnd={(e, { offset, velocity }) => {
@@ -126,13 +127,13 @@ export function TopTrack() {
 
           {/* Progress Indicators */}
           {topTracks.length > 1 && (
-            <div className="flex justify-center space-x-3 mt-8">
+            <div className="mt-8 flex justify-center space-x-3">
               {topTracks.map((_, index) => (
                 <motion.button
                   key={index}
-                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                  className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${
                     currentIndex === index
-                      ? 'bg-purple-500 w-6'
+                      ? 'w-6 bg-purple-500'
                       : 'bg-gray-600 hover:bg-gray-500'
                   }`}
                   onClick={() => {
@@ -141,16 +142,16 @@ export function TopTrack() {
                   }}
                   whileHover={{ scale: 1.2 }}
                   whileTap={{ scale: 0.8 }}
-                    />
-                  ))}
-                </div>
-              )}
-                    </div>
-                  </div>
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Background Glow Effect */}
       <motion.div
-        className="absolute inset-0 pointer-events-none"
+        className="pointer-events-none absolute inset-0"
         variants={glowVariants}
         initial="hidden"
         animate="visible"
@@ -163,18 +164,18 @@ export function TopTrack() {
         <>
           <button
             onClick={handlePrevious}
-            className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 hover:bg-black/50 text-white/75 hover:text-white backdrop-blur-sm transition-all duration-300 opacity-0 group-hover:opacity-100 focus:opacity-100"
+            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white/75 opacity-0 backdrop-blur-sm transition-all duration-300 hover:bg-black/50 hover:text-white focus:opacity-100 group-hover:opacity-100"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="h-6 w-6" />
           </button>
           <button
             onClick={handleNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 hover:bg-black/50 text-white/75 hover:text-white backdrop-blur-sm transition-all duration-300 opacity-0 group-hover:opacity-100 focus:opacity-100"
+            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white/75 opacity-0 backdrop-blur-sm transition-all duration-300 hover:bg-black/50 hover:text-white focus:opacity-100 group-hover:opacity-100"
           >
-            <ChevronRight className="w-6 h-6" />
+            <ChevronRight className="h-6 w-6" />
           </button>
         </>
       )}
     </motion.section>
   );
-} 
+}

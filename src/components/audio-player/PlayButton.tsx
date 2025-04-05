@@ -1,6 +1,7 @@
 'use client';
 
 import { useAudioPlayer } from '@/context/AudioPlayerContext';
+import { MediaItem } from '@/db/media';
 import { LatestRelease } from '@/types';
 import { motion } from 'framer-motion';
 import { PauseIcon, PlayIcon } from 'lucide-react';
@@ -18,7 +19,7 @@ export function PlayButton({
   variant = 'default',
   className = ''
 }: PlayButtonProps) {
-  const { isCurrentTrack, playerState, playTrack, togglePlay } = useAudioPlayer();
+  const { isCurrentTrack, playerState, play, togglePlay } = useAudioPlayer();
   const isThisTrackPlaying = isCurrentTrack(track.id) && playerState.isPlaying;
 
   // Get button size classes
@@ -61,12 +62,31 @@ export function PlayButton({
     }
   };
 
+  // Convert LatestRelease to MediaItem
+  const convertToMediaItem = (track: LatestRelease): MediaItem => ({
+    id: track.id,
+    title: track.title,
+    type: 'audio',
+    url: track.audioUrl,
+    thumbnailUrl: track.coverImage,
+    description: track.description,
+    metadata: {
+      artist: track.artist,
+      releaseDate: track.releaseDate,
+      genre: track.genre,
+      duration: track.duration?.toString()
+    },
+    createdAt: track.releaseDate || new Date().toISOString(),
+    updatedAt: track.releaseDate || new Date().toISOString()
+  });
+
   // Handle click
   const handleClick = async () => {
     if (isCurrentTrack(track.id)) {
       await togglePlay();
     } else {
-      await playTrack(track);
+      const mediaItem = convertToMediaItem(track);
+      await play(mediaItem);
     }
   };
 
