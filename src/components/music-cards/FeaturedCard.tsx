@@ -27,6 +27,16 @@ export function FeaturedCard({ track, className = '' }: Props) {
   const [isArtistTruncated, setIsArtistTruncated] = useState(false);
   const [isDescriptionTruncated, setIsDescriptionTruncated] = useState(false);
 
+  // Format date consistently
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
   // Check for text truncation
   useEffect(() => {
     const checkTruncation = () => {
@@ -141,11 +151,7 @@ export function FeaturedCard({ track, className = '' }: Props) {
             {track.releaseDate && (
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 text-xs md:text-sm text-gray-300">
                 <CalendarIcon size={12} className="text-purple-400" />
-                {new Date(track.releaseDate).toLocaleDateString(undefined, {
-                  year: 'numeric',
-                  month: 'short',
-                  day: 'numeric'
-                })}
+                {formatDate(track.releaseDate)}
               </div>
             )}
           </div>

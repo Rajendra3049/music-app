@@ -8,16 +8,12 @@ interface MusicCollectionLayoutProps {
   children: ReactNode;
   title: string;
   description?: string;
-  viewMode: 'grid' | 'list';
-  onViewModeChange: (mode: 'grid' | 'list') => void;
 }
 
 export function MusicCollectionLayout({
   children,
   title,
   description,
-  viewMode,
-  onViewModeChange,
 }: MusicCollectionLayoutProps) {
   return (
     <div className="flex flex-col min-h-screen">
@@ -25,8 +21,6 @@ export function MusicCollectionLayout({
         <CategoryHeader
           title={title}
           description={description}
-          viewMode={viewMode}
-          onViewModeChange={onViewModeChange}
         />
         <div className="mt-8">
           {children}

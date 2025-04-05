@@ -54,8 +54,6 @@ export default function MusicPage() {
     <MusicCollectionLayout
       title="Music Collection"
       description="Browse and manage your music collection"
-      viewMode={viewMode}
-      onViewModeChange={setViewMode}
     >
       <div className="space-y-6">
         <FilterBar
