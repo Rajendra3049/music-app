@@ -1,5 +1,6 @@
 'use client';
 
+import VideoCarousel from '@/components/youtube/VideoCarousel';
 import {
   OWNER_BIOGRAPHY,
   OWNER_CAREER_HIGHLIGHTS,
@@ -13,6 +14,7 @@ import {
 import { motion } from 'framer-motion';
 import { Award, Calendar, Instagram, Music2, Users, Youtube } from 'lucide-react';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -50,7 +52,36 @@ const careerHighlights = OWNER_CAREER_HIGHLIGHTS.map(highlight => ({
         highlight.icon === 'Calendar' ? Calendar : Award
 }));
 
+interface Video {
+  id: string;
+  title: string;
+  description: string;
+  thumbnail: string;
+  publishedAt: string;
+}
+
 export default function AboutPage() {
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        const response = await fetch('/api/youtube');
+        const data = await response.json();
+        if (data.videos) {
+          setVideos(data.videos);
+        }
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchVideos();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-purple-900/20 to-black">
       {/* Hero Section */}
@@ -170,6 +201,36 @@ export default function AboutPage() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </motion.section>
+
+      {/* Videos Section */}
+      <motion.section
+        variants={staggerContainer}
+        initial="initial"
+        whileInView="animate"
+        viewport={{ once: true }}
+        className="py-12 px-4 sm:px-6"
+      >
+        <div className="max-w-7xl mx-auto">
+          <motion.h2
+            variants={fadeInUp}
+            className="text-3xl font-bold text-white mb-8 text-center"
+          >
+            Latest Performances
+          </motion.h2>
+
+          {isLoading ? (
+            <div className="flex justify-center items-center min-h-[200px]">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+            </div>
+          ) : videos.length > 0 ? (
+            <div className="px-12">
+              <VideoCarousel videos={videos} />
+            </div>
+          ) : (
+            <p className="text-center text-gray-400">No videos available at the moment.</p>
+          )}
         </div>
       </motion.section>
 

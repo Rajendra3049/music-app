@@ -106,6 +106,7 @@ export default function ContactPage() {
       setSubmitStatus('success');
       setFormData({ name: '', email: '', subject: '', message: '' });
     } catch (error) {
+      console.error('Error submitting form:', error);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -354,7 +355,7 @@ export default function ContactPage() {
 
               {submitStatus === 'success' && (
                 <p className="text-green-500 text-center mt-4">
-                  Message sent successfully! We'll get back to you soon.
+                  Message sent successfully! We&apos;ll get back to you soon.
                 </p>
               )}
               {submitStatus === 'error' && (

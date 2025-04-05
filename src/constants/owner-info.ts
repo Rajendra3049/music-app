@@ -13,7 +13,9 @@ export const OWNER_SOCIAL = {
   },
   youtube: {
     url: 'https://www.youtube.com/@DjVmVishal',
-    handle: 'DJ VM Vishal'
+    handle: 'DJ VM Vishal',
+    channelId: 'UClxGJeGJm8jUeQOzVuHBduQ', // Replace with your actual YouTube channel ID
+    apiKey: process.env.YOUTUBE_API_KEY // Will be used to fetch videos
   },
   facebook: 'https://facebook.com/djvmvishal',
   twitter: 'https://twitter.com/djvmvishal',
@@ -60,8 +62,8 @@ export const OWNER_FUN_FACTS = [
 // Profile Image
 export const OWNER_PROFILE_IMAGE = '/images/artist.png';
 
-// YouTube Video
-export const OWNER_YOUTUBE_VIDEO = 'your-video-id';
+// Featured Video (fallback if API fails)
+export const OWNER_YOUTUBE_VIDEO = 'i4A6z8mfgF4';
 
 // Contact Page Content
 export const CONTACT_PAGE = {
