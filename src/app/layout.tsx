@@ -2,8 +2,6 @@ import { MiniPlayer } from '@/components/audio-player/MiniPlayer';
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { AudioPlayerProvider } from '@/context/AudioPlayerContext';
-import { AuthProvider } from "@/context/AuthContext";
-import { ThemeProvider } from "@/context/ThemeContext";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -24,7 +22,6 @@ export const metadata: Metadata = {
     userScalable: false,
   },
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f3f4f6' },
     { media: '(prefers-color-scheme: dark)', color: '#111827' },
   ],
 };
@@ -38,30 +35,26 @@ export default function RootLayout({
     <html 
       lang="en" 
       suppressHydrationWarning 
-      className={`${inter.variable} antialiased`}
+      className={`${inter.variable} antialiased dark`}
     >
       <body 
-        className={`${inter.className} text-gray-900 dark:text-gray-100 overflow-x-hidden`} 
+        className={`${inter.className} text-gray-100 overflow-x-hidden bg-gray-900`} 
         suppressHydrationWarning
       >
-        <AuthProvider>
-          <ThemeProvider>
-            <AudioPlayerProvider>
-              <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
-                <Header />
-                <main className="flex-grow w-full max-w-[100vw] overflow-x-hidden">
-                  <div className="mx-auto w-full">
-                    {children}
-                  </div>
-                </main>
-                <div className="pb-[72px] sm:pb-[84px] md:pb-[96px]">
-                  <Footer />
-                </div>
-                <MiniPlayer />
+        <AudioPlayerProvider>
+          <div className="min-h-screen flex flex-col bg-gray-900 transition-colors duration-200">
+            <Header />
+            <main className="flex-grow w-full max-w-[100vw] overflow-x-hidden">
+              <div className="mx-auto w-full">
+                {children}
               </div>
-            </AudioPlayerProvider>
-          </ThemeProvider>
-        </AuthProvider>
+            </main>
+            <div className="pb-[72px] sm:pb-[84px] md:pb-[96px]">
+              <Footer />
+            </div>
+            <MiniPlayer />
+          </div>
+        </AudioPlayerProvider>
       </body>
     </html>
   );

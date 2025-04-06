@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useAudioPlayer } from '@/context/AudioPlayerContext';
 import { MediaItem } from '@/db/media';
 import { cn } from '@/lib/utils';
-import { Heart, Pause, Play } from 'lucide-react';
+import { Pause, Play } from 'lucide-react';
 import Image from 'next/image';
 
 interface CompactMusicCardProps {
@@ -13,11 +13,6 @@ interface CompactMusicCardProps {
 
 export function CompactMusicCard({ track }: CompactMusicCardProps) {
   const { play, pause, playerState, currentTrack } = useAudioPlayer();
-
-  const handleFavorite = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    // TODO: Implement favorite functionality
-  };
 
   const handlePlayPause = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -91,16 +86,6 @@ export function CompactMusicCard({ track }: CompactMusicCardProps) {
           </span>
         </div>
       </div>
-
-      {/* Action Buttons */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-8 w-8"
-        onClick={handleFavorite}
-      >
-        <Heart className="h-4 w-4" />
-      </Button>
     </div>
   );
 } 
