@@ -2,8 +2,16 @@
 
 import { OWNER_NAME, OWNER_YOUTUBE_VIDEO } from '@/constants/owner-info';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 export function VideoSection() {
+  const [videoUrl, setVideoUrl] = useState(`https://www.youtube.com/embed/${OWNER_YOUTUBE_VIDEO}?rel=1&modestbranding=1&playsinline=1&showinfo=0`);
+
+  useEffect(() => {
+    // Update video URL with origin and referrer only on client side
+    setVideoUrl(`https://www.youtube.com/embed/${OWNER_YOUTUBE_VIDEO}?rel=1&modestbranding=1&playsinline=1&showinfo=0&enablejsapi=1&origin=${window.location.origin}&widget_referrer=${window.location.href}`);
+  }, []);
+
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
@@ -33,7 +41,7 @@ export function VideoSection() {
         >
           <iframe
             className="h-full w-full"
-            src={`https://www.youtube.com/embed/${OWNER_YOUTUBE_VIDEO}`}
+            src={videoUrl}
             title={`${OWNER_NAME} Performance`}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
