@@ -5,11 +5,28 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 export function VideoSection() {
-  const [videoUrl, setVideoUrl] = useState(`https://www.youtube.com/embed/${OWNER_YOUTUBE_VIDEO}?rel=1&modestbranding=1&playsinline=1&showinfo=0`);
+  const [videoUrl, setVideoUrl] = useState(
+    `https://www.youtube.com/embed/${OWNER_YOUTUBE_VIDEO}?rel=0&modestbranding=1&playsinline=1&showinfo=0&controls=1&color=white&loop=1`
+  );
 
   useEffect(() => {
-    // Update video URL with origin and referrer only on client side
-    setVideoUrl(`https://www.youtube.com/embed/${OWNER_YOUTUBE_VIDEO}?rel=1&modestbranding=1&playsinline=1&showinfo=0&enablejsapi=1&origin=${window.location.origin}&widget_referrer=${window.location.href}`);
+    // Update video URL with enhanced parameters to prevent suggested videos and maintain brand consistency
+    setVideoUrl(
+      `https://www.youtube.com/embed/${OWNER_YOUTUBE_VIDEO}?` +
+      new URLSearchParams({
+        rel: '0',                    // Disable related videos
+        modestbranding: '1',         // Reduce YouTube branding
+        playsinline: '1',            // Play inline on mobile
+        showinfo: '0',               // Hide video title and uploader info
+        controls: '1',               // Show video controls
+        color: 'white',              // Use white progress bar
+        loop: '1',                   // Enable video looping
+        enablejsapi: '1',            // Enable JavaScript API
+        origin: window.location.origin,
+        widget_referrer: window.location.href,
+        playlist: OWNER_YOUTUBE_VIDEO // Required for looping single video
+      }).toString()
+    );
   }, []);
 
   const fadeInUp = {
@@ -32,13 +49,16 @@ export function VideoSection() {
       initial="initial"
       whileInView="animate"
       viewport={{ once: true }}
-      className="px-4 py-12 sm:px-6"
+      className="relative px-4 py-12 sm:px-6"
     >
       <div className="mx-auto max-w-4xl">
         <motion.div
           variants={fadeInUp}
-          className="aspect-video overflow-hidden rounded-xl"
+          className="relative aspect-video overflow-hidden rounded-xl bg-black/5 shadow-xl ring-1 ring-white/10"
         >
+          {/* Video Overlay (prevents unwanted clicks/suggestions) */}
+          <div className="absolute inset-0 z-10 pointer-events-none rounded-xl ring-1 ring-white/20 shadow-inner" />
+          
           <iframe
             className="h-full w-full"
             src={videoUrl}

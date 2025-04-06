@@ -8,8 +8,7 @@ import {
   OWNER_NAME,
   OWNER_PROFESSION,
   OWNER_PROFILE_IMAGE,
-  OWNER_SOCIAL,
-  OWNER_YOUTUBE_VIDEO
+  OWNER_SOCIAL
 } from '@/constants/owner-info';
 import { motion } from 'framer-motion';
 import { Award, Calendar, Instagram, Music2, Users, Youtube } from 'lucide-react';
@@ -264,30 +263,6 @@ export default function AboutPage() {
               </motion.div>
             ))}
           </div>
-        </div>
-      </motion.section>
-
-      {/* Video Section */}
-      <motion.section
-        variants={staggerContainer}
-        initial="initial"
-        whileInView="animate"
-        viewport={{ once: true }}
-        className="py-12 px-4 sm:px-6"
-      >
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            variants={fadeInUp}
-            className="aspect-video rounded-xl overflow-hidden"
-          >
-            <iframe
-              className="w-full h-full"
-              src={`https://www.youtube.com/embed/${OWNER_YOUTUBE_VIDEO}`}
-              title={`${OWNER_NAME} Performance`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </motion.div>
         </div>
       </motion.section>
     </div>
