@@ -19,6 +19,7 @@ export async function GET() {
     const videosData = await videosResponse.json();
 
     // Format the response
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const videos = videosData.items.map((item: any) => ({
       id: item.snippet.resourceId.videoId,
       title: item.snippet.title,
